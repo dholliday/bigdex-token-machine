@@ -56,7 +56,7 @@ export default function Home() {
               All source code for this machine can be found on GitHub here
               <ExternalLinkIcon mx="2px" />
             </Link>{" "}
-            Be nice, open source. Don't be a twat.
+            Be nice, open source. Don&apos;t be a twat.
           </Alert>
         </Container>
         <Container mt="2em">

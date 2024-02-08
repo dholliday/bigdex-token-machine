@@ -1,5 +1,7 @@
 "use client";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
+import { useWallet } from "@solana/wallet-adapter-react";
+
 import {
   Heading,
   Box,
@@ -41,13 +43,20 @@ type FormValues = {
 };
 
 export default function Home() {
+  const { connected } = useWallet();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setTimeout(() => {
+      //do what you need here
+    }, 2000);
+    console.log(data);
+  };
+  //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 
   return (
     <Box as="main">
@@ -64,93 +73,106 @@ export default function Home() {
             process.
           </Text>
           <Text mt="1em">gl hf. 3rr.</Text>
-          <Alert mt="1em" status="info">
-            <AlertIcon />
+          <Box mt="1em">
             <Link
               href="https://github.com/dholliday/bigdex-token-machine"
               isExternal
             >
-              All source code for this machine can be found on GitHub here
+              All source code for this can be found on GitHub.
               <ExternalLinkIcon mx="2px" />
-            </Link>{" "}
-            Be nice, open source. Don&apos;t be a twat.
-          </Alert>
+            </Link>
+          </Box>
+          <Text mt="1em">Be nice, open source. Don&apos;t be a twat.</Text>
         </Container>
-        <Container mt="2em">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack spacing={8}>
-              <InputGroup>
-                <InputLeftAddon>Solana Network</InputLeftAddon>
-                <Select
-                  {...register("network")}
-                  placeholder="Select option"
-                  isRequired
-                >
-                  <option value="devnet">devnet</option>
-                  <option value="mainnet-beta">mainnet-beta</option>
-                </Select>
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>Name</InputLeftAddon>
-                <Input {...register("name")} placeholder="Big Dex" isRequired />
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>Symbol</InputLeftAddon>
-                <Input
-                  {...register("symbol")}
-                  placeholder="BIGDEX"
-                  isRequired
-                />
-              </InputGroup>
-              <FormControl>
+        {connected ? (
+          <Container mt="2em">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack spacing={8}>
                 <InputGroup>
-                  <InputLeftAddon>Metadata URI</InputLeftAddon>
-                  <Input
-                    placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                  <InputLeftAddon>Solana Network</InputLeftAddon>
+                  <Select
+                    {...register("network")}
+                    placeholder="Select option"
                     isRequired
-                    {...register("uri")}
+                  >
+                    <option value="devnet">devnet</option>
+                    <option value="mainnet-beta">mainnet-beta</option>
+                  </Select>
+                </InputGroup>
+                <InputGroup>
+                  <InputLeftAddon>Name</InputLeftAddon>
+                  <Input
+                    {...register("name")}
+                    placeholder="Big Dex"
+                    isRequired
                   />
                 </InputGroup>
-                <FormHelperText>
-                  This needs to be a JSON file following the{" "}
-                  <Link
-                    href="https://developers.metaplex.com/token-metadata/token-standard"
-                    isExternal
-                  >
-                    Metada Token Standard (The Fungible Asset Standard)
-                    <ExternalLinkIcon mx="2px" />
-                  </Link>{" "}
-                  hosted at a sensible public location. You pick!
-                </FormHelperText>
-                <FormHelperText>
-                  <Link href="/example_metadata.json">
-                    Example Metadata JSON file
-                  </Link>
-                </FormHelperText>
-              </FormControl>
-              <InputGroup>
-                <InputLeftAddon>Amount</InputLeftAddon>
-                <Input
-                  {...register("amount")}
-                  placeholder="42069000000"
-                  isRequired
-                />
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>Decimals</InputLeftAddon>
-                <Input {...register("decimals")} placeholder="2" isRequired />
-              </InputGroup>
-              <Button
-                colorScheme="pink"
-                size="lg"
-                isLoading={isSubmitting}
-                type="submit"
-              >
-                🍬🍬🍬 MINT 🍬🍬🍬
-              </Button>
-            </VStack>
-          </form>
-        </Container>
+                <InputGroup>
+                  <InputLeftAddon>Symbol</InputLeftAddon>
+                  <Input
+                    {...register("symbol")}
+                    placeholder="BIGDEX"
+                    isRequired
+                  />
+                </InputGroup>
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftAddon>Metadata URI</InputLeftAddon>
+                    <Input
+                      placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                      isRequired
+                      {...register("uri")}
+                    />
+                  </InputGroup>
+                  <FormHelperText>
+                    This needs to be a JSON file following the{" "}
+                    <Link
+                      href="https://developers.metaplex.com/token-metadata/token-standard"
+                      isExternal
+                    >
+                      Metada Token Standard (The Fungible Asset Standard)
+                      <ExternalLinkIcon mx="2px" />
+                    </Link>{" "}
+                    hosted at a sensible public location. You pick!
+                  </FormHelperText>
+                  <FormHelperText>
+                    <Link href="/example_metadata.json">
+                      Example Metadata JSON file
+                    </Link>
+                  </FormHelperText>
+                </FormControl>
+                <InputGroup>
+                  <InputLeftAddon>Amount</InputLeftAddon>
+                  <Input
+                    {...register("amount")}
+                    placeholder="42069000000"
+                    isRequired
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <InputLeftAddon>Decimals</InputLeftAddon>
+                  <Input {...register("decimals")} placeholder="2" isRequired />
+                </InputGroup>
+                <Button
+                  colorScheme="pink"
+                  size="lg"
+                  isLoading={isSubmitting}
+                  type="submit"
+                >
+                  🍬🍬🍬 MINT 🍬🍬🍬
+                </Button>
+              </VStack>
+            </form>
+          </Container>
+        ) : (
+          <Container>
+            <Alert mt="1em" status="error">
+              <AlertIcon />
+              Please connect your wallet. Otherwise this will be a little
+              difficult...
+            </Alert>
+          </Container>
+        )}
       </Box>
     </Box>
   );

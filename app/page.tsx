@@ -1,5 +1,5 @@
 "use client";
-
+import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import {
   Heading,
   Box,
@@ -31,7 +31,24 @@ import {
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
+type FormValues = {
+  network: string;
+  name: string;
+  symbol: string;
+  uri: string;
+  amount: number;
+  decimals: number;
+};
+
 export default function Home() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>();
+  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+
   return (
     <Box as="main">
       <Box as="section" color="#2496af" pb="4em" pt="1em">
@@ -60,59 +77,79 @@ export default function Home() {
           </Alert>
         </Container>
         <Container mt="2em">
-          <VStack spacing={8}>
-            <InputGroup>
-              <InputLeftAddon>Solana Network</InputLeftAddon>
-              <Select placeholder="Select option" isRequired>
-                <option value="devnet">devnet</option>
-                <option value="mainnet-beta">mainnet-beta</option>
-              </Select>
-            </InputGroup>
-            <InputGroup>
-              <InputLeftAddon>Name</InputLeftAddon>
-              <Input placeholder="Big Dex" isRequired />
-            </InputGroup>
-            <InputGroup>
-              <InputLeftAddon>Symbol</InputLeftAddon>
-              <Input placeholder="BIGDEX" isRequired />
-            </InputGroup>
-            <FormControl>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <VStack spacing={8}>
               <InputGroup>
-                <InputLeftAddon>Metadata URI</InputLeftAddon>
+                <InputLeftAddon>Solana Network</InputLeftAddon>
+                <Select
+                  {...register("network")}
+                  placeholder="Select option"
+                  isRequired
+                >
+                  <option value="devnet">devnet</option>
+                  <option value="mainnet-beta">mainnet-beta</option>
+                </Select>
+              </InputGroup>
+              <InputGroup>
+                <InputLeftAddon>Name</InputLeftAddon>
+                <Input {...register("name")} placeholder="Big Dex" isRequired />
+              </InputGroup>
+              <InputGroup>
+                <InputLeftAddon>Symbol</InputLeftAddon>
                 <Input
-                  placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                  {...register("symbol")}
+                  placeholder="BIGDEX"
                   isRequired
                 />
               </InputGroup>
-              <FormHelperText>
-                This needs to be a JSON file following the{" "}
-                <Link
-                  href="https://developers.metaplex.com/token-metadata/token-standard"
-                  isExternal
-                >
-                  Metada Token Standard (The Fungible Asset Standard)
-                  <ExternalLinkIcon mx="2px" />
-                </Link>{" "}
-                hosted at a sensible public location. You pick!
-              </FormHelperText>
-              <FormHelperText>
-                <Link href="/example_metadata.json">
-                  Example Metadata JSON file
-                </Link>
-              </FormHelperText>
-            </FormControl>
-            <InputGroup>
-              <InputLeftAddon>Amount</InputLeftAddon>
-              <Input placeholder="42069000000" isRequired />
-            </InputGroup>
-            <InputGroup>
-              <InputLeftAddon>Decimals</InputLeftAddon>
-              <Input placeholder="2" isRequired />
-            </InputGroup>
-            <Button colorScheme="pink" size="lg">
-              🍬🍬🍬 MINT 🍬🍬🍬
-            </Button>
-          </VStack>
+              <FormControl>
+                <InputGroup>
+                  <InputLeftAddon>Metadata URI</InputLeftAddon>
+                  <Input
+                    placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                    isRequired
+                    {...register("uri")}
+                  />
+                </InputGroup>
+                <FormHelperText>
+                  This needs to be a JSON file following the{" "}
+                  <Link
+                    href="https://developers.metaplex.com/token-metadata/token-standard"
+                    isExternal
+                  >
+                    Metada Token Standard (The Fungible Asset Standard)
+                    <ExternalLinkIcon mx="2px" />
+                  </Link>{" "}
+                  hosted at a sensible public location. You pick!
+                </FormHelperText>
+                <FormHelperText>
+                  <Link href="/example_metadata.json">
+                    Example Metadata JSON file
+                  </Link>
+                </FormHelperText>
+              </FormControl>
+              <InputGroup>
+                <InputLeftAddon>Amount</InputLeftAddon>
+                <Input
+                  {...register("amount")}
+                  placeholder="42069000000"
+                  isRequired
+                />
+              </InputGroup>
+              <InputGroup>
+                <InputLeftAddon>Decimals</InputLeftAddon>
+                <Input {...register("decimals")} placeholder="2" isRequired />
+              </InputGroup>
+              <Button
+                colorScheme="pink"
+                size="lg"
+                isLoading={isSubmitting}
+                type="submit"
+              >
+                🍬🍬🍬 MINT 🍬🍬🍬
+              </Button>
+            </VStack>
+          </form>
         </Container>
       </Box>
     </Box>

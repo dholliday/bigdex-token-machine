@@ -25,6 +25,7 @@ import {
   Button,
   Select,
 } from "@chakra-ui/react";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export default function Home() {
   return (
@@ -52,13 +53,30 @@ export default function Home() {
               <InputLeftAddon>Symbol</InputLeftAddon>
               <Input placeholder="BIGDEX" isRequired />
             </InputGroup>
-            <InputGroup>
-              <InputLeftAddon>Metadata URI</InputLeftAddon>
-              <Input
-                placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
-                isRequired
-              />
-            </InputGroup>
+            <FormControl>
+              <InputGroup>
+                <InputLeftAddon>Metadata URI</InputLeftAddon>
+                <Input
+                  placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                  isRequired
+                />
+              </InputGroup>
+              <FormHelperText>
+                This needs to be a JSON file following the{" "}
+                <Link
+                  href="https://developers.metaplex.com/token-metadata/token-standard"
+                  isExternal
+                >
+                  Metada Token Standard (The Fungible Asset Standard){" "}
+                  <ExternalLinkIcon mx="2px" />
+                </Link>
+              </FormHelperText>
+              <FormHelperText>
+                <Link href="/example_metadata.json">
+                  Example Metadata JSON file
+                </Link>
+              </FormHelperText>
+            </FormControl>
             <InputGroup>
               <InputLeftAddon>Decimals</InputLeftAddon>
               <Input placeholder="2" isRequired />

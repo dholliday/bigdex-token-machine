@@ -24,6 +24,10 @@ import {
   Container,
   Button,
   Select,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
@@ -33,8 +37,27 @@ export default function Home() {
       <Box as="section" color="#2496af" pb="4em" pt="1em">
         <Container>
           <Center>
-            <Heading textAlign={"center"}>$BIGDEX Solana Token Machine</Heading>
+            <Heading textAlign={"center"}>The Solana Token Machine</Heading>
           </Center>
+          <Text mt="1em">
+            Your currently logged in wallet will be used as the{" "}
+            <strong>Minting Authority</strong> and will own the token. The token
+            minting process will create a new <strong>Mint Account</strong>, the
+            secret key of which will be provided to you during the minting
+            process.
+          </Text>
+          <Text mt="1em">gl hf. 3rr.</Text>
+          <Alert mt="1em" status="info">
+            <AlertIcon />
+            <Link
+              href="https://github.com/dholliday/bigdex-token-machine"
+              isExternal
+            >
+              All source code for this machine can be found on GitHub here
+              <ExternalLinkIcon mx="2px" />
+            </Link>{" "}
+            Be nice, open source. Don't be a twat.
+          </Alert>
         </Container>
         <Container mt="2em">
           <VStack spacing={8}>
@@ -67,9 +90,10 @@ export default function Home() {
                   href="https://developers.metaplex.com/token-metadata/token-standard"
                   isExternal
                 >
-                  Metada Token Standard (The Fungible Asset Standard){" "}
+                  Metada Token Standard (The Fungible Asset Standard)
                   <ExternalLinkIcon mx="2px" />
-                </Link>
+                </Link>{" "}
+                hosted at a sensible public location. You pick!
               </FormHelperText>
               <FormHelperText>
                 <Link href="/example_metadata.json">
@@ -77,6 +101,10 @@ export default function Home() {
                 </Link>
               </FormHelperText>
             </FormControl>
+            <InputGroup>
+              <InputLeftAddon>Amount</InputLeftAddon>
+              <Input placeholder="42069000000" isRequired />
+            </InputGroup>
             <InputGroup>
               <InputLeftAddon>Decimals</InputLeftAddon>
               <Input placeholder="2" isRequired />

@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheckx
 // Disabled TS Type checking as PublicKey can be null and i couldn't work out how to handle it properly!
 
 "use client";
@@ -17,12 +17,18 @@ import {
   publicKey,
 } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+import type { Context, PublicKey } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import {
+  fromWeb3JsInstruction,
+  toWeb3JsPublicKey,
+} from "@metaplex-foundation/umi-web3js-adapters";
 import {
   createV1,
   mintV1,
   TokenStandard,
   printSupply,
+  mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 import {
@@ -76,7 +82,7 @@ export default function Home() {
       web3.clusterApiUrl(formData.network)
     );
     console.log(`Connection Created to ${formData.network}`);
-    const umi = createUmi(connection);
+    const umi = createUmi(connection).use(mplTokenMetadata());
     console.log(`Connection to umi created`);
     const mint = generateSigner(umi);
     console.log(
@@ -108,7 +114,7 @@ export default function Home() {
           `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
         );
       });
-    // @ts-ignore: Object is possibly 'null'.
+
     await mintV1(umi, {
       mint: mint.publicKey,
       authority: umi.identity,

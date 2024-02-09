@@ -149,6 +149,11 @@ export default function Home() {
             secret key of which will be provided to you during the minting
             process.
           </Text>
+          <Text mt="1em">
+            If you get any value from this feel free to ping me some SOL or some
+            of your sexy new token! My wallet public address is
+            HpksWfTfABoBwPJ8ac8c6qvAewtNs5DyrDuZWMieCcfq
+          </Text>
           <Text mt="1em">gl hf. 3rr.</Text>
           <Box mt="1em">
             <Link
@@ -250,11 +255,7 @@ export default function Home() {
                 </Button>
               </VStack>
             </form>
-            <Box>
-              {/* Results go here */}
-              <Box>{JSON.stringify(data)}</Box>
-              <Box>{JSON.stringify(result)}</Box>
-            </Box>
+            <Box>{/* Results go here */}</Box>
           </Container>
         ) : (
           <Container>

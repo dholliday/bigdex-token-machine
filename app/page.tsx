@@ -2,6 +2,7 @@
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { useWallet } from "@solana/wallet-adapter-react";
 import * as web3 from "@solana/web3.js";
+import * as bs58 from "bs58";
 import { Cluster } from "@solana/web3.js";
 import React, { useState } from "react";
 import {
@@ -76,7 +77,9 @@ export default function Home() {
     console.log(
       `Generated new Mint Account with Secret Key: [${mint.secretKey}] & Public Key: ${mint.publicKey}`
     );
-    // SET UP WALLET TO SIGN FOR THE AUHORITY WITH UMI USE
+    console.log(
+      `Oh shit it worked! Check out https://explorer.solana.com/address/${mint.publicKey}?cluster=${formData.network}`
+    );
 
     umi.use(walletAdapterIdentity(wallet!.adapter));
     console.log(`Setup umi with wallet adapter`);
@@ -90,8 +93,16 @@ export default function Home() {
       sellerFeeBasisPoints: percentAmount(0),
       tokenStandard: TokenStandard.Fungible,
       decimals: formData.decimals,
-    }).sendAndConfirm(umi);
-    console.log(`Oh shit it worked!`);
+    })
+      .sendAndConfirm(umi)
+      .then((result) => {
+        const txSig = bs58.encode(result.signature);
+        console.log(result);
+        console.log(txSig);
+        console.log(
+          `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
+        );
+      });
   };
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 

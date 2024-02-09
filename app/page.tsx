@@ -11,6 +11,7 @@ import {
   createSignerFromKeypair,
   publicKey,
 } from "@metaplex-foundation/umi";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   createV1,
@@ -54,14 +55,15 @@ type FormValues = {
 export default function Home() {
   const { connected, wallet, publicKey, wallets } = useWallet();
   const [data, setData] = React.useState({});
-  const [result, setResult] = React.useState();
+  const [result, setResult] = React.useState<any[]>([]);
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (formData) => {
+  const onSubmit: SubmitHandler<FormValues> = async (formData) => {
+    console.log(wallet);
     setData(formData);
     console.log(formData);
     const connection = new web3.Connection(
@@ -69,7 +71,27 @@ export default function Home() {
     );
     console.log(`Connection Created to ${formData.network}`);
     const umi = createUmi(connection);
-    console.log(`Connection to umi created with ${umi}`);
+    console.log(`Connection to umi created`);
+    const mint = generateSigner(umi);
+    console.log(
+      `Generated new Mint Account with Secret Key: [${mint.secretKey}] & Public Key: ${mint.publicKey}`
+    );
+    // SET UP WALLET TO SIGN FOR THE AUHORITY WITH UMI USE
+
+    umi.use(walletAdapterIdentity(wallet!.adapter));
+    console.log(`Setup umi with wallet adapter`);
+
+    await createV1(umi, {
+      mint,
+      authority: umi.identity,
+      name: formData.name,
+      symbol: formData.symbol,
+      uri: formData.uri,
+      sellerFeeBasisPoints: percentAmount(0),
+      tokenStandard: TokenStandard.Fungible,
+      decimals: formData.decimals,
+    }).sendAndConfirm(umi);
+    console.log(`Oh shit it worked!`);
   };
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 
@@ -161,7 +183,7 @@ export default function Home() {
                     hosted at a sensible public location. You pick!
                   </FormHelperText>
                   <FormHelperText>
-                    <Link href="/example_metadata.json">
+                    <Link href="/example_metadata.json" isExternal>
                       Example Metadata JSON file
                     </Link>
                   </FormHelperText>
@@ -191,6 +213,7 @@ export default function Home() {
             <Box>
               {/* Results go here */}
               <Box>{JSON.stringify(data)}</Box>
+              <Box>{JSON.stringify(result)}</Box>
             </Box>
           </Container>
         ) : (

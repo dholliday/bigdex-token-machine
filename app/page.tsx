@@ -68,6 +68,9 @@ export default function Home() {
   const { connected, wallet, publicKey, wallets } = useWallet();
   const [data, setData] = React.useState({});
   const [result, setResult] = React.useState<any[]>([]);
+  const [mintAccountStatus, setMintAccountStatus] = React.useState();
+  const [tokenCreationStatus, setTokenCreationStatus] = React.useState();
+  const [mintTokenStatus, setMintTokenStatus] = React.useState();
   const {
     register,
     handleSubmit,
@@ -91,6 +94,9 @@ export default function Home() {
     console.log(
       `Oh shit it worked! Check out https://explorer.solana.com/address/${mint.publicKey}?cluster=${formData.network}`
     );
+    setMintAccountStatus(
+      `✅ Generated new Mint Account with Secret Key: [${mint.secretKey}] & Public Key: ${mint.publicKey} ✅`
+    );
 
     umi.use(walletAdapterIdentity(wallet!.adapter));
     console.log(`Setup umi with wallet adapter`);
@@ -108,9 +114,10 @@ export default function Home() {
       .sendAndConfirm(umi)
       .then((result) => {
         const txSig = bs58.encode(result.signature);
-        console.log(result);
-        console.log(txSig);
         console.log(
+          `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
+        );
+        setTokenCreationStatus(
           `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
         );
       });
@@ -125,9 +132,10 @@ export default function Home() {
       .sendAndConfirm(umi)
       .then((result) => {
         const txSig = bs58.encode(result.signature);
-        console.log(result);
-        console.log(txSig);
         console.log(
+          `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
+        );
+        setMintTokenStatus(
           `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
         );
       });
@@ -179,91 +187,116 @@ export default function Home() {
           </Alert>
         </Container>
         {connected ? (
-          <Container mt="2em">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <VStack spacing={8}>
-                <InputGroup>
-                  <InputLeftAddon>Solana Network</InputLeftAddon>
-                  <Select
-                    {...register("network")}
-                    placeholder="Select option"
-                    isRequired
-                  >
-                    <option value="devnet">devnet</option>
-                    <option value="mainnet-beta">mainnet-beta</option>
-                  </Select>
-                </InputGroup>
-                <InputGroup>
-                  <InputLeftAddon>Name</InputLeftAddon>
-                  <Input
-                    {...register("name")}
-                    placeholder="Big Dex"
-                    isRequired
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <InputLeftAddon>Symbol</InputLeftAddon>
-                  <Input
-                    {...register("symbol")}
-                    placeholder="BIGDEX"
-                    isRequired
-                  />
-                </InputGroup>
-                <FormControl>
+          <Box>
+            <Container mt="2em">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <VStack spacing={8}>
                   <InputGroup>
-                    <InputLeftAddon>Metadata URI</InputLeftAddon>
-                    <Input
-                      placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                    <InputLeftAddon>Solana Network</InputLeftAddon>
+                    <Select
+                      {...register("network")}
+                      placeholder="Select option"
                       isRequired
-                      {...register("uri")}
+                    >
+                      <option value="devnet">devnet</option>
+                      <option value="mainnet-beta">mainnet-beta</option>
+                    </Select>
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftAddon>Name</InputLeftAddon>
+                    <Input
+                      {...register("name")}
+                      placeholder="Big Dex"
+                      isRequired
                     />
                   </InputGroup>
-                  <FormHelperText>
-                    This needs to be a JSON file following the{" "}
-                    <Link
-                      href="https://developers.metaplex.com/token-metadata/token-standard"
-                      isExternal
-                    >
-                      Metada Token Standard (The Fungible Asset Standard)
-                      <ExternalLinkIcon mx="2px" />
-                    </Link>{" "}
-                    hosted at a sensible public location. You pick!
-                  </FormHelperText>
-                  <FormHelperText>
-                    <Link href="/example_metadata.json" isExternal>
-                      Example Metadata JSON file
-                    </Link>
-                  </FormHelperText>
-                </FormControl>
-                <InputGroup>
-                  <InputLeftAddon>Amount</InputLeftAddon>
-                  <Input
-                    {...register("amount")}
-                    placeholder="42069000000"
-                    isRequired
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <InputLeftAddon>Decimals</InputLeftAddon>
-                  <Input {...register("decimals")} placeholder="2" isRequired />
-                </InputGroup>
-                <Button
-                  colorScheme="pink"
-                  size="lg"
-                  isLoading={isSubmitting}
-                  type="submit"
-                >
-                  🍬🍬🍬 MINT 🍬🍬🍬
-                </Button>
-              </VStack>
-            </form>
-            <Box>
+                  <InputGroup>
+                    <InputLeftAddon>Symbol</InputLeftAddon>
+                    <Input
+                      {...register("symbol")}
+                      placeholder="BIGDEX"
+                      isRequired
+                    />
+                  </InputGroup>
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftAddon>Metadata URI</InputLeftAddon>
+                      <Input
+                        placeholder="https://bigdex.lol/token/bigdex/token_metadata.json"
+                        isRequired
+                        {...register("uri")}
+                      />
+                    </InputGroup>
+                    <FormHelperText>
+                      This needs to be a JSON file following the{" "}
+                      <Link
+                        href="https://developers.metaplex.com/token-metadata/token-standard"
+                        isExternal
+                      >
+                        Metada Token Standard (The Fungible Asset Standard)
+                        <ExternalLinkIcon mx="2px" />
+                      </Link>{" "}
+                      hosted at a sensible public location. You pick!
+                    </FormHelperText>
+                    <FormHelperText>
+                      <Link href="/example_metadata.json" isExternal>
+                        Example Metadata JSON file
+                      </Link>
+                    </FormHelperText>
+                  </FormControl>
+                  <InputGroup>
+                    <InputLeftAddon>Amount</InputLeftAddon>
+                    <Input
+                      {...register("amount")}
+                      placeholder="42069000000"
+                      isRequired
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftAddon>Decimals</InputLeftAddon>
+                    <Input
+                      {...register("decimals")}
+                      placeholder="2"
+                      isRequired
+                    />
+                  </InputGroup>
+                  <Button
+                    colorScheme="orange"
+                    size="lg"
+                    isLoading={isSubmitting}
+                    type="submit"
+                  >
+                    🍬🍬🍬 hmmmm... LFG! 🍬🍬🍬
+                  </Button>
+                </VStack>
+              </form>
+            </Container>
+            <VStack
+              spacing="8"
+              mt="2em"
+              bg="teal"
+              borderRadius={10}
+              p="1em"
+              color="white"
+            >
               {/* Results go here */}
               <Heading as="h2" size="md">
-                Minting Results
+                Your Minting Results
               </Heading>
-            </Box>
-          </Container>
+              <Heading as="h3" size="sm">
+                Mint Account
+              </Heading>
+              <Text>{mintAccountStatus}</Text>
+              <Heading as="h3" size="sm">
+                Token Creation
+              </Heading>
+              <Text>{tokenCreationStatus}</Text>
+              <Heading as="h3" size="sm">
+                Mint the Token
+              </Heading>
+              <Text>{mintTokenStatus}</Text>
+            </VStack>
+          </Box>
         ) : (
           <Container>
             <Alert mt="1em" status="error">

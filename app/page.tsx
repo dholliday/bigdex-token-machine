@@ -45,7 +45,7 @@ type FormValues = {
 
 export default function Home() {
   const { connected, wallet, publicKey, wallets } = useWallet();
-  const [data, setData] = React.useState();
+  const [data, setData] = React.useState({});
   const [result, setResult] = React.useState();
   const {
     register,
@@ -55,6 +55,7 @@ export default function Home() {
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
     setData(formData);
+    console.log(formData);
   };
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 
@@ -83,6 +84,16 @@ export default function Home() {
             </Link>
           </Box>
           <Text mt="1em">Be nice, open source. Don&apos;t be a twat.</Text>
+          <Alert mt="1em" status="error">
+            <AlertIcon />
+            <AlertTitle>
+              MAKE SURE YOUR WALLET IS IN THE RIGHT NETWORK FIRST.
+            </AlertTitle>
+            <AlertDescription>
+              This front-end code can&apos;t tell if your wallet is in devnet or
+              mainnet! So sort that setting out first please.
+            </AlertDescription>
+          </Alert>
         </Container>
         {connected ? (
           <Container mt="2em">

@@ -1,7 +1,22 @@
 "use client";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { useWallet } from "@solana/wallet-adapter-react";
+import * as web3 from "@solana/web3.js";
+import { Cluster } from "@solana/web3.js";
 import React, { useState } from "react";
+import {
+  generateSigner,
+  percentAmount,
+  signerIdentity,
+  createSignerFromKeypair,
+  publicKey,
+} from "@metaplex-foundation/umi";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import {
+  createV1,
+  TokenStandard,
+  printSupply,
+} from "@metaplex-foundation/mpl-token-metadata";
 
 import {
   Heading,
@@ -9,21 +24,14 @@ import {
   Text,
   Center,
   Link,
-  Image,
   Input,
   InputGroup,
   InputLeftAddon,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   FormControl,
   FormLabel,
   FormErrorMessage,
   FormHelperText,
   VStack,
-  HStack,
   Container,
   Button,
   Select,
@@ -35,7 +43,7 @@ import {
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 type FormValues = {
-  network: string;
+  network: Cluster;
   name: string;
   symbol: string;
   uri: string;
@@ -56,6 +64,12 @@ export default function Home() {
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
     setData(formData);
     console.log(formData);
+    const connection = new web3.Connection(
+      web3.clusterApiUrl(formData.network)
+    );
+    console.log(`Connection Created to ${formData.network}`);
+    const umi = createUmi(connection);
+    console.log(`Connection to umi created with ${umi}`);
   };
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 

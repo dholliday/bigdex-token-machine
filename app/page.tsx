@@ -1,4 +1,4 @@
-// @ts-nocheckx
+// @ts-nocheck
 // Disabled TS Type checking as PublicKey can be null and i couldn't work out how to handle it properly!
 
 "use client";
@@ -140,7 +140,9 @@ export default function Home() {
       <Box as="section" color="#2496af" pb="4em" pt="1em">
         <Container>
           <Center>
-            <Heading textAlign={"center"}>The Solana Token Machine</Heading>
+            <Heading as="h1" textAlign={"center"}>
+              The Solana Token Machine
+            </Heading>
           </Center>
           <Text mt="1em">
             Your currently logged in wallet will be used as the{" "}
@@ -255,7 +257,12 @@ export default function Home() {
                 </Button>
               </VStack>
             </form>
-            <Box>{/* Results go here */}</Box>
+            <Box>
+              {/* Results go here */}
+              <Heading as="h2" size="md">
+                Minting Results
+              </Heading>
+            </Box>
           </Container>
         ) : (
           <Container>

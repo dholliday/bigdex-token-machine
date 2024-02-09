@@ -81,9 +81,7 @@ export default function Home() {
     console.log(wallet);
     setData(formData);
     console.log(formData);
-    const connection = new web3.Connection(
-      web3.clusterApiUrl(formData.network)
-    );
+    const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
     console.log(`Connection Created to ${formData.network}`);
     const umi = createUmi(connection).use(mplTokenMetadata());
     console.log(`Connection to umi created`);
@@ -199,7 +197,6 @@ export default function Home() {
                       isRequired
                     >
                       <option value="devnet">devnet</option>
-                      <option value="mainnet-beta">mainnet-beta</option>
                     </Select>
                   </InputGroup>
                   <InputGroup>

@@ -4,6 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import * as web3 from "@solana/web3.js";
 import * as bs58 from "bs58";
 import { Cluster } from "@solana/web3.js";
+import * as token from "@solana/spl-token";
 import React, { useState } from "react";
 import {
   generateSigner,
@@ -16,6 +17,7 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   createV1,
+  mintV1,
   TokenStandard,
   printSupply,
 } from "@metaplex-foundation/mpl-token-metadata";
@@ -103,7 +105,25 @@ export default function Home() {
           `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
         );
       });
+
+    await mintV1(umi, {
+      mint: mint.publicKey,
+      authority: umi.identity,
+      amount: formData.amount,
+      tokenOwner: publicKey!,
+      tokenStandard: TokenStandard.Fungible,
+    })
+      .sendAndConfirm(umi)
+      .then((result) => {
+        const txSig = bs58.encode(result.signature);
+        console.log(result);
+        console.log(txSig);
+        console.log(
+          `Oh shit it worked! Check out https://explorer.solana.com/tx/${txSig}?cluster=${formData.network}`
+        );
+      });
   };
+
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 
   return (

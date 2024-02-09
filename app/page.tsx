@@ -1,6 +1,7 @@
 "use client";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { useWallet } from "@solana/wallet-adapter-react";
+import React, { useState } from "react";
 
 import {
   Heading,
@@ -43,18 +44,17 @@ type FormValues = {
 };
 
 export default function Home() {
-  const { connected } = useWallet();
+  const { connected, wallet, publicKey, wallets } = useWallet();
+  const [data, setData] = React.useState();
+  const [result, setResult] = React.useState();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setTimeout(() => {
-      //do what you need here
-    }, 2000);
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (formData) => {
+    setData(formData);
   };
   //TODO: Add full form validation with data types for each field and ensure a user can't fuck it up at https://react-hook-form.com/get-started#Applyvalidation
 
@@ -163,6 +163,10 @@ export default function Home() {
                 </Button>
               </VStack>
             </form>
+            <Box>
+              {/* Results go here */}
+              <Box>{JSON.stringify(data)}</Box>
+            </Box>
           </Container>
         ) : (
           <Container>
